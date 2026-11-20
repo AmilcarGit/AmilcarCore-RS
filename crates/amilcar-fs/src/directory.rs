@@ -20,7 +20,9 @@ pub struct DirectoryOptions {
 
 impl Default for DirectoryOptions {
     fn default() -> Self {
-        Self { max_entries: 100_000 }
+        Self {
+            max_entries: 100_000,
+        }
     }
 }
 
@@ -104,9 +106,13 @@ mod tests {
         fs::write(root.join("notes.txt"), "text").unwrap();
         let found = find_files(
             &root,
-            &FileFilter { extension: Some("json".into()), name_contains: None },
+            &FileFilter {
+                extension: Some("json".into()),
+                name_contains: None,
+            },
             &DirectoryOptions::default(),
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(found.len(), 1);
         assert!(found[0].ends_with("sample.JSON"));
         fs::remove_dir_all(root).unwrap();
