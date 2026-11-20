@@ -11,8 +11,15 @@ pub struct DuplicateGroup {
 }
 
 /// Find duplicate regular files under a directory. Traversal is bounded by max_entries.
-pub fn find_duplicates(root: impl AsRef<Path>, max_entries: usize) -> io::Result<Vec<DuplicateGroup>> {
-    let files = find_files(root, &FileFilter::default(), &DirectoryOptions { max_entries })?;
+pub fn find_duplicates(
+    root: impl AsRef<Path>,
+    max_entries: usize,
+) -> io::Result<Vec<DuplicateGroup>> {
+    let files = find_files(
+        root,
+        &FileFilter::default(),
+        &DirectoryOptions { max_entries },
+    )?;
     let mut by_digest: HashMap<String, Vec<PathBuf>> = HashMap::new();
     for path in files {
         let digest = sha256_file(&path)?;
