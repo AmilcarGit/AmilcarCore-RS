@@ -158,7 +158,7 @@ amilcar file move copia.txt datos/copia.txt
 
 echo "Hola mundo" > notas.txt
 echo '{"activo":true}' > datos.json
-printf 'nombre,edad\\nAna,20\\n' > personas.csv
+printf 'nombre,edad\nAna,20\n' > personas.csv
 amilcar text stats notas.txt
 amilcar json validate datos.json
 amilcar json format datos.json formateado.json
@@ -460,7 +460,7 @@ amilcar file move copy.txt data/copy.txt
 
 echo "Hello world" > notes.txt
 echo '{"active":true}' > data.json
-printf 'name,age\\nAna,20\\n' > people.csv
+printf 'name,age\nAna,20\n' > people.csv
 amilcar text stats notes.txt
 amilcar json validate data.json
 amilcar json format data.json formatted.json
