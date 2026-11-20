@@ -1,3 +1,4 @@
+use crate::reader::BUFFER_SIZE;
 use std::fs::{self, OpenOptions};
 use std::io::{self, BufReader, Write};
 use std::path::Path;
@@ -31,7 +32,7 @@ pub fn copy_file(
             ));
         }
     }
-    let mut input = BufReader::new(fs::File::open(source)?);
+    let mut input = BufReader::with_capacity(BUFFER_SIZE, fs::File::open(source)?);
     let mut options = OpenOptions::new();
     options.write(true);
     if overwrite {
