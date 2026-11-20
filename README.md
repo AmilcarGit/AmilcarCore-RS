@@ -80,22 +80,128 @@ flowchart TD
 
 El CLI actúa como adaptador. La lógica reutilizable pertenece a las bibliotecas y no se duplica en la interfaz de terminal.
 
-## Instalación en Termux y Linux
+## Instalación paso a paso
 
-Requisitos: Git, Rust y Cargo 1.75 o superior.
+AmilcarCore-RS se compila en tu propio dispositivo. Necesitas Git, Rust y Cargo **1.75 o superior**. La primera compilación necesita conexión para descargar el repositorio y las dependencias; las operaciones del motor se ejecutan localmente.
 
-~~~sh
+### Android con Termux
+
+**1. Actualiza los paquetes e instala los requisitos**
+
+```sh
+pkg update && pkg upgrade
+pkg install git rust
+```
+
+**2. Comprueba Rust, Cargo y Git**
+
+```sh
+rustc --version
+cargo --version
+git --version
+```
+
+Rust debe ser 1.75 o superior. Si es anterior, actualiza tu toolchain antes de continuar.
+
+**3. Descarga el repositorio**
+
+```sh
+git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
+cd AmilcarCore-RS
+```
+
+**4. Compila e instala**
+
+```sh
+sh scripts/install.sh
+```
+
+El instalador compila el CLI en modo release y copia el ejecutable a `$HOME/.local/bin/amilcar`. La compilación puede tardar varios minutos según el dispositivo.
+
+**5. Añade el ejecutable al PATH**
+
+Si el instalador indica que `$HOME/.local/bin` no está en tu PATH:
+
+```sh
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**6. Verifica la instalación**
+
+```sh
+amilcar --version
+amilcar info
+amilcar --help
+amilcar file --help
+```
+
+**7. Prueba los comandos**
+
+```sh
+mkdir -p ~/amilcar-prueba
+cd ~/amilcar-prueba
+echo "Hola AmilcarCore" > origen.txt
+amilcar file inspect origen.txt
+amilcar file copy origen.txt copia.txt
+amilcar file hash origen.txt
+amilcar file diff origen.txt copia.txt
+amilcar file duplicates .
+amilcar file mkdir datos/nuevo
+amilcar file move copia.txt datos/copia.txt
+```
+
+### Linux
+
+**1. Instala Git y las herramientas de compilación.** En Debian/Ubuntu:
+
+```sh
+sudo apt update
+sudo apt install -y git build-essential curl
+```
+
+**2. Instala Rust estable** si tu distribución no proporciona Rust 1.75 o superior:
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+. "$HOME/.cargo/env"
+rustup update stable
+```
+
+**3. Clona, compila e instala**
+
+```sh
 git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
 cd AmilcarCore-RS
 sh scripts/install.sh
+```
+
+**4. Configura el PATH** si es necesario:
+
+```sh
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**5. Verifica**
+
+```sh
+amilcar --version
 amilcar info
-~~~
+amilcar --help
+```
 
-- [Guía visual HTML en español](docs/guide-es.html)
-- [English HTML guide](docs/guide-en.html)
-- [Manual completo para Termux y distribuciones Linux](docs/INSTALLATION.md)
+### Solución de problemas
 
-El instalador compila el CLI desde el código fuente y lo coloca en <code>$HOME/.local/bin</code> por defecto.
+- **`amilcar: command not found`:** el ejecutable aún no está instalado o `$HOME/.local/bin` no está en el PATH. Ejecuta el instalador y configura el PATH.
+- **`cargo: command not found`:** instala Rust y Cargo y vuelve a abrir la terminal.
+- **Rust anterior a 1.75:** actualiza Rust estable antes de compilar.
+- **La compilación falla o Termux se queda sin memoria:** revisa el error, cierra otras aplicaciones y vuelve a ejecutar `sh scripts/install.sh`.
+- **El comando sigue sin aparecer:** comprueba que exista `$HOME/.local/bin/amilcar` y ejecuta `export PATH="$HOME/.local/bin:$PATH"`.
+
+> **Nota Android:** Termux compila el programa en el propio dispositivo. La compatibilidad depende de la arquitectura y la toolchain disponibles. No se distribuyen APK ni binarios Android precompilados.
+
+Consulta la [guía completa](docs/INSTALLATION.md) y la [guía visual](docs/guide-es.html).
 
 ## Demostración de terminal
 
@@ -227,22 +333,128 @@ flowchart TD
 
 The CLI is an adapter. Reusable logic belongs in the libraries rather than being duplicated in the terminal interface.
 
-## Install on Termux and Linux
+## Step-by-step installation
 
-Requirements: Git, Rust and Cargo 1.75 or newer.
+AmilcarCore-RS is compiled on your own device. You need Git, Rust and Cargo **1.75 or newer**. The first build requires an internet connection to download the repository and Cargo dependencies; engine operations run locally.
 
-~~~sh
+### Android with Termux
+
+**1. Update packages and install requirements**
+
+```sh
+pkg update && pkg upgrade
+pkg install git rust
+```
+
+**2. Check Rust, Cargo and Git**
+
+```sh
+rustc --version
+cargo --version
+git --version
+```
+
+Rust must be version 1.75 or newer.
+
+**3. Clone the repository**
+
+```sh
+git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
+cd AmilcarCore-RS
+```
+
+**4. Build and install**
+
+```sh
+sh scripts/install.sh
+```
+
+The installer builds the CLI in release mode and copies it to `$HOME/.local/bin/amilcar`. Build time depends on your device.
+
+**5. Add the executable directory to PATH**
+
+If the installer reports that `$HOME/.local/bin` is not in PATH:
+
+```sh
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**6. Verify the installation**
+
+```sh
+amilcar --version
+amilcar info
+amilcar --help
+amilcar file --help
+```
+
+**7. Try the commands**
+
+```sh
+mkdir -p ~/amilcar-test
+cd ~/amilcar-test
+echo "Hello AmilcarCore" > source.txt
+amilcar file inspect source.txt
+amilcar file copy source.txt copy.txt
+amilcar file hash source.txt
+amilcar file diff source.txt copy.txt
+amilcar file duplicates .
+amilcar file mkdir data/new
+amilcar file move copy.txt data/copy.txt
+```
+
+### Linux
+
+**1. Install Git and build tools.** On Debian/Ubuntu:
+
+```sh
+sudo apt update
+sudo apt install -y git build-essential curl
+```
+
+**2. Install stable Rust** if your distribution does not provide Rust 1.75 or newer:
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+. "$HOME/.cargo/env"
+rustup update stable
+```
+
+**3. Clone, build and install**
+
+```sh
 git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
 cd AmilcarCore-RS
 sh scripts/install.sh
+```
+
+**4. Configure PATH** if needed:
+
+```sh
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**5. Verify**
+
+```sh
+amilcar --version
 amilcar info
-~~~
+amilcar --help
+```
 
-- [Spanish visual HTML guide](docs/guide-es.html)
-- [English visual HTML guide](docs/guide-en.html)
-- [Complete Termux and Linux installation manual](docs/INSTALLATION.md)
+### Troubleshooting
 
-The installer builds the CLI from source and installs it into <code>$HOME/.local/bin</code> by default.
+- **`amilcar: command not found`:** the executable is not installed or `$HOME/.local/bin` is missing from PATH. Run the installer and configure PATH.
+- **`cargo: command not found`:** install Rust and Cargo, then reopen the terminal.
+- **Rust older than 1.75:** update stable Rust before building.
+- **Build fails or Termux runs out of memory:** inspect the error, close other apps and run `sh scripts/install.sh` again.
+- **Command is still unavailable:** check that `$HOME/.local/bin/amilcar` exists and run `export PATH="$HOME/.local/bin:$PATH"`.
+
+> **Android note:** Termux builds the program on the device. Compatibility depends on the available architecture and toolchain. No Android APKs or prebuilt Android binaries are distributed.
+
+See the [complete installation guide](docs/INSTALLATION.md) and [visual guide](docs/guide-en.html).
 
 ## Terminal demonstration
 
