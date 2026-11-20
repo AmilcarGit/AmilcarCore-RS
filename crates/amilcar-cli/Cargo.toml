@@ -10,4 +10,5 @@ name = "amilcar"
 path = "src/main.rs"
 [dependencies]
 amilcar-core.workspace = true
+amilcar-fs.workspace = true
 clap.workspace = true
