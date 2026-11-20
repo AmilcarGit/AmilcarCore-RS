@@ -24,7 +24,7 @@
 
 AmilcarCore-RS es un workspace modular escrito en Rust. Ofrece una biblioteca reutilizable y una interfaz de línea de comandos para inspeccionar, comparar y buscar archivos localmente.
 
-> **Estado:** desarrollo temprano · Etapa 3 — operaciones avanzadas del sistema de archivos. Las API pueden cambiar antes de una versión estable.
+> **Estado:** desarrollo temprano · etapas de implementación 1–6 completadas; validación física en Termux pendiente. Las API pueden cambiar antes de una versión estable.
 
 ### Características disponibles
 
@@ -37,6 +37,12 @@ AmilcarCore-RS es un workspace modular escrito en Rust. Ofrece una biblioteca re
 - Creación de directorios y eliminación segura de archivos/directorios vacíos.
 - Hash SHA-256 en streaming y agrupación de archivos duplicados.
 - Escrituras explícitas: crear sin sobrescribir o sobrescribir solo cuando se solicita.
+- Estadísticas UTF-8: bytes, caracteres, palabras y líneas.
+- Normalización de saltos de línea CRLF/CR a LF.
+- Validación, formateo legible y compactación de JSON.
+- Validación e inspección de CSV, formateo y selección de columnas.
+- Salida estructurada `--json` para integrar los comandos exitosos con scripts.
+- Pruebas de integración y benchmarks informativos para archivos y datos.
 - Ejecución local para las operaciones core documentadas.
 
 ### Versiones y compatibilidad
@@ -48,7 +54,7 @@ AmilcarCore-RS es un workspace modular escrito en Rust. Ofrece una biblioteca re
 | Edition | Rust 2021 |
 | Licencia | <code>MIT OR Apache-2.0</code> |
 | Plataformas CI | Linux, Windows y macOS |
-| Android / Termux | Compilación local sujeta a la toolchain y arquitectura disponibles |
+| Android / Termux | Check de compilación ARM64 en CI; prueba física pendiente |
 | Estado | Desarrollo temprano |
 
 La insignia de CI muestra el estado del workflow de GitHub Actions en <code>main</code>. La compatibilidad Android/Termux no significa que existan APK o binarios precompilados.
@@ -61,7 +67,7 @@ La insignia de CI muestra el estado del workflow de GitHub Actions en <code>main
 | --- | --- |
 | <code>amilcar-core</code> | API pública, motor, configuración y errores compartidos |
 | <code>amilcar-fs</code> | Operaciones del sistema de archivos |
-| <code>amilcar-data</code> | Procesamiento de texto y datos estructurados; en desarrollo |
+| <code>amilcar-data</code> | Texto UTF-8, JSON y CSV |
 | <code>amilcar-cli</code> | Interfaz de terminal que consume la biblioteca |
 
 ### Flujo de ejecución
@@ -251,6 +257,24 @@ amilcar file remove ./archivo.txt
 # SHA-256 y duplicados
 amilcar file hash ./archivo.txt
 amilcar file duplicates ./documentos --max-entries 100000
+
+# Estadísticas y normalización de texto
+amilcar text stats ./notas.txt
+amilcar text normalize ./entrada.txt ./salida.txt
+
+# Validar y formatear JSON
+amilcar json validate ./datos.json
+amilcar json format ./datos.json ./datos-formateados.json
+amilcar json format ./datos.json ./datos-min.json --compact
+
+# Validar, inspeccionar y transformar CSV
+amilcar csv validate ./personas.csv
+amilcar csv inspect ./personas.csv
+amilcar csv format ./personas.csv ./personas-limpias.csv
+amilcar csv select ./personas.csv ./nombres.csv --columns nombre,edad
+
+# Salida JSON para automatización
+amilcar --json file inspect ./notas.txt
 ~~~
 
 ## Seguridad y diseño
@@ -263,7 +287,7 @@ amilcar file duplicates ./documentos --max-entries 100000
 
 ## Hoja de ruta
 
-El procesamiento ampliado de texto, JSON/CSV, más comandos, benchmarks y verificación completa en plataformas adicionales siguen en desarrollo. No se presentan como funciones terminadas.
+Las etapas de implementación 1–6 están incorporadas: procesamiento de texto/JSON/CSV, CLI, benchmarks y controles multiplataforma. La validación en dispositivos Termux físicos y la publicación estable 1.0 siguen pendientes. Consulta [ROADMAP](docs/ROADMAP.md) y [Release checklist](docs/RELEASING.md).
 
 ## Licencia
 
@@ -277,7 +301,7 @@ Puedes elegir entre [MIT](LICENSE-MIT) o [Apache License 2.0](LICENSE-APACHE).
 
 AmilcarCore-RS is a modular Rust workspace. It provides a reusable library and a command-line interface for local file inspection, comparison and search.
 
-> **Status:** early development · Stage 3 — advanced filesystem operations. APIs may change before a stable release.
+> **Status:** early development · implementation Stages 1–6 complete; physical Termux validation pending. APIs may change before a stable release.
 
 ### Available features
 
@@ -290,6 +314,12 @@ AmilcarCore-RS is a modular Rust workspace. It provides a reusable library and a
 - Directory creation and safe removal of files/empty directories.
 - Streaming SHA-256 and duplicate-file grouping.
 - Explicit write modes: create without replacement, or overwrite only when requested.
+- UTF-8 statistics: bytes, characters, words and lines.
+- CRLF/CR to LF newline normalization.
+- JSON validation, pretty formatting and compact serialization.
+- CSV validation/inspection, formatting and column selection.
+- Machine-readable `--json` output for successful command results.
+- CLI integration tests and informational benchmarks for file/data workloads.
 - Local execution for the documented core operations.
 
 ### Version and compatibility
@@ -301,7 +331,7 @@ AmilcarCore-RS is a modular Rust workspace. It provides a reusable library and a
 | Edition | Rust 2021 |
 | License | <code>MIT OR Apache-2.0</code> |
 | CI platforms | Linux, Windows and macOS |
-| Android / Termux | Local compilation depends on the available toolchain and architecture |
+| Android / Termux | ARM64 compile check in CI; physical device test pending |
 | Status | Early development |
 
 The CI badge reflects the GitHub Actions workflow on <code>main</code>. Android/Termux support does not mean prebuilt APKs or Android binaries are currently published.
@@ -314,7 +344,7 @@ The CI badge reflects the GitHub Actions workflow on <code>main</code>. Android/
 | --- | --- |
 | <code>amilcar-core</code> | Public API, engine, configuration and shared errors |
 | <code>amilcar-fs</code> | Filesystem operations |
-| <code>amilcar-data</code> | Text and structured-data processing; in development |
+| <code>amilcar-data</code> | UTF-8 text, JSON and CSV |
 | <code>amilcar-cli</code> | Terminal interface built on the library |
 
 ### Execution flow
@@ -504,6 +534,24 @@ amilcar file remove ./file.txt
 # SHA-256 and duplicate detection
 amilcar file hash ./file.txt
 amilcar file duplicates ./documents --max-entries 100000
+
+# Text statistics and newline normalization
+amilcar text stats ./notes.txt
+amilcar text normalize ./input.txt ./output.txt
+
+# Validate and format JSON
+amilcar json validate ./data.json
+amilcar json format ./data.json ./formatted.json
+amilcar json format ./data.json ./compact.json --compact
+
+# Validate, inspect and transform CSV
+amilcar csv validate ./people.csv
+amilcar csv inspect ./people.csv
+amilcar csv format ./people.csv ./clean-people.csv
+amilcar csv select ./people.csv ./names.csv --columns name,age
+
+# JSON output for automation
+amilcar --json file inspect ./notes.txt
 ~~~
 
 ## Security and design
@@ -516,7 +564,7 @@ amilcar file duplicates ./documents --max-entries 100000
 
 ## Roadmap
 
-Expanded text, JSON/CSV processing, additional commands, benchmarks and broader platform verification are still in development. They are not presented as completed features.
+Implementation Stages 1–6 are in place: text/JSON/CSV processing, CLI command groups, benchmarks and platform CI checks. Physical Termux device validation and the stable 1.0 release remain pending. See the [roadmap](docs/ROADMAP.md) and [release checklist](docs/RELEASING.md).
 
 ## License
 
