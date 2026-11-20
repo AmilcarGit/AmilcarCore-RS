@@ -4,14 +4,14 @@
 
 A modular, local-first Rust toolkit for inspecting, transforming, validating and processing files and structured data. Designed as a reusable library and a command-line application.
 
-> Status: early development — Stage 1 (foundation). APIs may change before a stable release.
+> Status: early development — Stage 2 (filesystem foundation). APIs may change before a stable release.
 
 ## Workspace
 
 | Crate | Responsibility |
 | --- | --- |
 | `amilcar-core` | Public API, engine, configuration and shared errors |
-| `amilcar-fs` | Filesystem inspection and operations |
+| `amilcar-fs` | Filesystem inspection, buffered I/O, search and comparison |
 | `amilcar-data` | Text and structured-data processing |
 | `amilcar-cli` | Terminal interface using the library APIs |
 
@@ -27,6 +27,17 @@ cargo test --workspace
 cargo run -p amilcar-cli -- --help
 ```
 
+## Filesystem CLI
+
+```sh
+amilcar file inspect ./document.txt
+amilcar file diff ./original.bin ./copy.bin
+amilcar file find ./documents --extension json
+amilcar file find ./documents --name config
+```
+
+The recursive finder does not follow symbolic links and has a configurable entry limit. File comparison uses buffered reads and reports the first differing byte offset. File writes are explicit through the library API: `WriteMode::CreateNew` refuses an existing destination; `WriteMode::Overwrite` must be requested to replace it.
+
 ## Principles
 
 - Local execution; no remote service or external API required by core workflows.
@@ -36,7 +47,7 @@ cargo run -p amilcar-cli -- --help
 - Avoid `unsafe` unless technically necessary and documented.
 - Focused dependencies with clear responsibilities.
 
-Planned capabilities include filesystem search/comparison, text and JSON/CSV processing, CLI command groups, benchmarks and cross-platform verification. These are roadmap goals, not claims that every feature is implemented today.
+Planned capabilities include richer text and JSON/CSV processing, complete CLI command groups, benchmarks and cross-platform verification. These are roadmap goals, not claims that every feature is implemented today.
 
 ## License
 
