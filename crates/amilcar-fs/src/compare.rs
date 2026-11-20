@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{self, BufReader, Read};
+use std::io::{self, Read};
 use std::path::Path;
 
 /// Result of comparing two files byte by byte.
@@ -32,10 +32,10 @@ pub fn compare_files(
     let right = right.as_ref();
     let left_size = std::fs::metadata(left)?.len();
     let right_size = std::fs::metadata(right)?.len();
-    let mut a = BufReader::new(File::open(left)?);
-    let mut b = BufReader::new(File::open(right)?);
-    let mut a_buf = [0_u8; 8192];
-    let mut b_buf = [0_u8; 8192];
+    let mut a = File::open(left)?;
+    let mut b = File::open(right)?;
+    let mut a_buf = [0_u8; crate::reader::BUFFER_SIZE];
+    let mut b_buf = [0_u8; crate::reader::BUFFER_SIZE];
     let mut offset = 0_u64;
 
     loop {
