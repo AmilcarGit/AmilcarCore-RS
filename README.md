@@ -15,6 +15,19 @@ A modular, local-first Rust toolkit for inspecting, transforming, validating and
 | `amilcar-data` | Text and structured-data processing |
 | `amilcar-cli` | Terminal interface using the library APIs |
 
+## Installation (Termux / Linux)
+
+See the [visual installation guide](docs/install.html) (HTML with diagrams and copyable commands) or the [complete installation manual](docs/INSTALLATION.md). The installer is available at `scripts/install.sh`; it builds the current CLI locally and installs it into `$HOME/.local/bin` by default. Rust 1.75+ and Cargo are required.
+
+```sh
+git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
+cd AmilcarCore-RS
+sh scripts/install.sh
+amilcar info
+```
+
+To uninstall the CLI binary, run `sh scripts/uninstall.sh` from the repository.
+
 ## Getting started
 
 Requires the stable Rust toolchain.
