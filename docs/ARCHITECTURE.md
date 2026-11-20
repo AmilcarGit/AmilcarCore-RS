@@ -25,7 +25,7 @@ flowchart TD
 
 ## Safety properties
 
-- Text, JSON and CSV CLI reads are limited to 64 MiB.
+- Text, JSON and CSV CLI reads are limited to 64 MiB and detect growth beyond the limit while reading.
 - Output files are created without replacement unless the caller passes \`--overwrite\`.
 - Recursive discovery does not follow symbolic links and has a configurable entry limit.
 - File hashing and comparison use buffered/streaming I/O.
