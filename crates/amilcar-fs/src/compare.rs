@@ -24,7 +24,10 @@ fn read_chunk(reader: &mut impl Read, buffer: &mut [u8]) -> io::Result<usize> {
 }
 
 /// Compare two files in bounded memory and report the first differing byte offset.
-pub fn compare_files(left: impl AsRef<Path>, right: impl AsRef<Path>) -> io::Result<FileComparison> {
+pub fn compare_files(
+    left: impl AsRef<Path>,
+    right: impl AsRef<Path>,
+) -> io::Result<FileComparison> {
     let left = left.as_ref();
     let right = right.as_ref();
     let left_size = std::fs::metadata(left)?.len();
