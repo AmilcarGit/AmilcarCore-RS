@@ -1,7 +1,14 @@
 # Changelog
 
 ## Unreleased
-- Initial Rust workspace, crate boundaries, shared engine types and CI foundation.
-- Filesystem stage 3: bounded file copying with explicit overwrite behavior, path move/rename, directory creation, safe file/empty-directory removal, streaming SHA-256, and duplicate detection.
-- CLI commands for copy, move, rename, mkdir, remove, rmdir, hash, and duplicates.
-- Added unit tests for copy policies, path operations, safe removal, SHA-256 and duplicate grouping.
+
+- Added UTF-8 text statistics and CRLF/CR newline normalization.
+- Added JSON validation, pretty formatting and compact serialization.
+- Added CSV validation, inspection, formatting and exact-header column selection.
+- Expanded the \`amilcar\` CLI with \`text\`, \`json\` and \`csv\` command groups.
+- Added global \`--json\` output for successful command results.
+- Added CLI integration tests for machine-readable output, text statistics, CSV selection and destination safety.
+- Added standalone filesystem and data-processing benchmark programs without a benchmark framework dependency.
+- Expanded CI to run formatting, all-target checks, tests and Clippy, plus Linux/Windows/macOS and Android ARM64 target checks.
+- Added architecture, roadmap and release preparation documentation.
+- Retained local-only processing and create-new output behavior unless \`--overwrite\` is explicitly supplied.
