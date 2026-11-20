@@ -7,3 +7,4 @@ license.workspace = true
 description = "Filesystem inspection and local file operations"
 [dependencies]
 thiserror.workspace = true
+sha2.workspace = true
