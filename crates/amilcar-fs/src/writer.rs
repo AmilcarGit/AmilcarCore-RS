@@ -12,11 +12,7 @@ pub enum WriteMode {
 }
 
 /// Write bytes using an explicit destination policy.
-pub fn write_bytes(
-    path: impl AsRef<Path>,
-    contents: &[u8],
-    mode: WriteMode,
-) -> io::Result<()> {
+pub fn write_bytes(path: impl AsRef<Path>, contents: &[u8], mode: WriteMode) -> io::Result<()> {
     let mut options = OpenOptions::new();
     options.write(true);
     match mode {
