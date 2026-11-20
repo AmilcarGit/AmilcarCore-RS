@@ -23,7 +23,10 @@ mod tests {
     #[test]
     fn validates_and_formats_json() {
         assert!(validate(r#"{"ready":true}"#).is_ok());
-        assert_eq!(format(r#"{"ready":true}"#).unwrap(), "{\n  \"ready\": true\n}");
+        assert_eq!(
+            format(r#"{"ready":true}"#).unwrap(),
+            "{\n  \"ready\": true\n}"
+        );
     }
 
     #[test]
@@ -33,6 +36,9 @@ mod tests {
 
     #[test]
     fn compact_removes_whitespace() {
-        assert_eq!(compact("{ \"message\" : \"hola\" }").unwrap(), r#"{"message":"hola"}"#);
+        assert_eq!(
+            compact("{ \"message\" : \"hola\" }").unwrap(),
+            r#"{"message":"hola"}"#
+        );
     }
 }
