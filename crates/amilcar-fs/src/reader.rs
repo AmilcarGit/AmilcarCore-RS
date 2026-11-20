@@ -17,8 +17,11 @@ pub fn read_to_string_limited(path: impl AsRef<Path>, max_bytes: u64) -> io::Res
             format!("file size {} exceeds limit {max_bytes}", metadata.len()),
         ));
     }
+    let capacity = usize::try_from(metadata.len()).map_err(|_| {
+        io::Error::new(io::ErrorKind::InvalidData, "file is too large for this platform")
+    })?;
 
-    let mut contents = String::with_capacity(metadata.len() as usize);
+    let mut contents = String::with_capacity(capacity);
     open_buffered(path)?.read_to_string(&mut contents)?;
     Ok(contents)
 }

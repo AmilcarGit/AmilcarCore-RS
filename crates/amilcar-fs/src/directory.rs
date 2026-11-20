@@ -31,6 +31,20 @@ pub fn find_files(
     options: &DirectoryOptions,
 ) -> io::Result<Vec<PathBuf>> {
     let root = root.as_ref();
+    let root_metadata = fs::symlink_metadata(root)?;
+    if root_metadata.file_type().is_symlink() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "directory search root must not be a symbolic link",
+        ));
+    }
+    if !root_metadata.is_dir() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "directory search root must be a directory",
+        ));
+    }
+
     let mut pending = vec![root.to_path_buf()];
     let mut matches = Vec::new();
     let mut visited = 0_usize;
@@ -64,12 +78,12 @@ pub fn find_files(
 }
 
 fn matches_filter(path: &Path, filter: &FileFilter) -> bool {
-    let name_matches = filter.name_contains.as_ref().is_none_or(|needle| {
+    let name_matches = filter.name_contains.as_ref().map_or(true, |needle| {
         path.file_name()
             .and_then(|name| name.to_str())
             .is_some_and(|name| name.to_lowercase().contains(&needle.to_lowercase()))
     });
-    let extension_matches = filter.extension.as_ref().is_none_or(|extension| {
+    let extension_matches = filter.extension.as_ref().map_or(true, |extension| {
         path.extension()
             .and_then(|value| value.to_str())
             .is_some_and(|value| value.eq_ignore_ascii_case(extension.trim_start_matches('.')))
