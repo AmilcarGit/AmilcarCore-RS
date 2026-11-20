@@ -8,7 +8,7 @@ This roadmap separates implementation from device-level validation. A checked im
 - [x] Stage 2 — filesystem foundation and safe operations: buffered reads, explicit writes, metadata inspection, bounded recursive search, byte comparison, copy/move/rename, directory operations, SHA-256 and duplicate detection.
 - [x] Stage 3 — local text, JSON and CSV processing: UTF-8 text statistics, newline normalization, JSON validation/pretty/compact formatting, CSV validation/inspection/formatting and column selection.
 - [x] Stage 4 — CLI command groups for file, text, JSON and CSV, with machine-readable \`--json\` output and safe output-file defaults.
-- [x] Stage 5 — reproducible benchmark executables for filesystem hashing/comparison and text/JSON/CSV processing, without a benchmark-framework dependency.
+- [x] Stage 5 — standardized 64 KiB streaming buffers, bounded-read growth checks, size-first duplicate filtering and reproducible filesystem/data benchmarks without a benchmark-framework dependency.
 - [x] Stage 6 — CI quality gates, Linux/Windows/macOS tests, Android ARM64 target check, installation instructions, architecture guide and release checklist.
 
 ## Remaining before stable 1.0
