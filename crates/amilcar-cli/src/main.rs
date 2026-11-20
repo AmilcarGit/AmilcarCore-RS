@@ -43,9 +43,15 @@ enum FileCommands {
         overwrite: bool,
     },
     /// Move a file or directory to a destination that must not exist.
-    Move {\n        source: PathBuf,\n        destination: PathBuf,\n    },
+    Move {
+        source: PathBuf,
+        destination: PathBuf,
+    },
     /// Rename a file or directory within its current parent directory.
-    Rename {\n        path: PathBuf,\n        new_name: String,\n    },
+    Rename {
+        path: PathBuf,
+        new_name: String,
+    },
     /// Create a directory and any missing parent directories.
     Mkdir { path: PathBuf },
     /// Remove one regular file. This does not remove directories.
@@ -75,14 +81,24 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Info => {
             let engine = amilcar_core::Engine::new();
             println!("AmilcarCore-RS {}", env!("CARGO_PKG_VERSION"));
-            println!(\n                "Maximum inspected file size: {} bytes",\n                engine.config().max_file_size\n            );
+            println!(
+                "Maximum inspected file size: {} bytes",
+                engine.config().max_file_size
+            );
             println!("Execution mode: local");
         }
         Commands::File { command } => match command {
             FileCommands::Inspect { path } => {
                 let result = amilcar_core::Engine::new().inspect_path(&path)?;
                 println!("Path: {}", result.path.display());
-                let kind = if result.is_directory {\n                    "directory"\n                } else if result.is_file {\n                    "file"\n                } else {\n                    "other"\n                };\n                println!("Type: {kind}");
+                let kind = if result.is_directory {
+                    "directory"
+                } else if result.is_file {
+                    "file"
+                } else {
+                    "other"
+                };
+                println!("Type: {kind}");
                 println!("Size: {} bytes", result.size);
             }
             FileCommands::Diff { left, right } => {
@@ -90,19 +106,38 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 if result.identical {
                     println!("Files are identical ({} bytes).", result.left_size);
                 } else {
-                    println!(\n                        "Files differ at byte {}.",\n                        result.first_difference.unwrap_or(0)\n                    );
-                    println!(\n                        "Left: {} bytes; right: {} bytes.",\n                        result.left_size,\n                        result.right_size\n                    );
+                    println!(
+                        "Files differ at byte {}.",
+                        result.first_difference.unwrap_or(0)
+                    );
+                    println!(
+                        "Left: {} bytes; right: {} bytes.",
+                        result.left_size,
+                        result.right_size
+                    );
                     std::process::exit(2);
                 }
             }
-            FileCommands::Find {\n                path,\n                extension,\n                name,\n                max_entries,\n            } => {
-                let filter = amilcar_fs::FileFilter {\n                    extension,\n                    name_contains: name,\n                };
+            FileCommands::Find {
+                path,
+                extension,
+                name,
+                max_entries,
+            } => {
+                let filter = amilcar_fs::FileFilter {
+                    extension,
+                    name_contains: name,
+                };
                 let options = amilcar_fs::DirectoryOptions { max_entries };
                 for found in amilcar_fs::find_files(path, &filter, &options)? {
                     println!("{}", found.display());
                 }
             }
-            FileCommands::Copy {\n                source,\n                destination,\n                overwrite,\n            } => {
+            FileCommands::Copy {
+                source,
+                destination,
+                overwrite,
+            } => {
                 let bytes = amilcar_fs::copy_file(source, destination, overwrite)?;
                 println!("Copied {bytes} bytes.");
             }
