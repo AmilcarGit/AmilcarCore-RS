@@ -53,7 +53,7 @@ AmilcarCore-RS es un workspace modular escrito en Rust. Ofrece una biblioteca re
 | Rust mínimo (MSRV) | <code>1.75</code> |
 | Edition | Rust 2021 |
 | Licencia | <code>MIT OR Apache-2.0</code> |
-| Plataformas CI | Linux, Windows y macOS |
+| Plataformas CI | Linux, Windows y macOS; check de compilación Android ARM64 |
 | Android / Termux | Check de compilación ARM64 en CI; prueba física pendiente |
 | Estado | Desarrollo temprano |
 
@@ -155,7 +155,32 @@ amilcar file diff origen.txt copia.txt
 amilcar file duplicates .
 amilcar file mkdir datos/nuevo
 amilcar file move copia.txt datos/copia.txt
+
+echo "Hola mundo" > notas.txt
+echo '{"activo":true}' > datos.json
+printf 'nombre,edad\\nAna,20\\n' > personas.csv
+amilcar text stats notas.txt
+amilcar json validate datos.json
+amilcar json format datos.json formateado.json
+amilcar csv inspect personas.csv
+amilcar csv select personas.csv seleccion.csv --columns nombre
+amilcar --json text stats notas.txt
 ```
+
+### Actualizar una instalación existente
+
+Desde la carpeta del repositorio:
+
+```sh
+cd ~/AmilcarCore-RS
+git pull --ff-only origin main
+sh scripts/install.sh
+hash -r
+amilcar --version
+amilcar info
+```
+
+`git pull` actualiza el código fuente; volver a ejecutar el instalador recompila y reemplaza el ejecutable instalado.
 
 ### Linux
 
@@ -282,7 +307,7 @@ amilcar --json file inspect ./notas.txt
 - No se requieren APIs externas ni servidor remoto para las operaciones core documentadas.
 - No se siguen enlaces simbólicos durante la búsqueda recursiva.
 - Los límites de entradas y tamaños reducen el riesgo de consumir recursos sin control.
-- La copia no sobrescribe archivos de forma predeterminada; el modo de reemplazo requiere <code>--overwrite</code>. La eliminación de directorios solo admite directorios vacíos.
+- La copia y las transformaciones no sobrescriben por defecto; el reemplazo requiere <code>--overwrite</code>. La escritura de reemplazo rechaza enlaces simbólicos y directorios; la eliminación de directorios solo admite directorios vacíos.
 - Se evita <code>unsafe</code> salvo que exista una justificación técnica documentada.
 
 ## Hoja de ruta
@@ -330,7 +355,7 @@ AmilcarCore-RS is a modular Rust workspace. It provides a reusable library and a
 | Minimum Rust version (MSRV) | <code>1.75</code> |
 | Edition | Rust 2021 |
 | License | <code>MIT OR Apache-2.0</code> |
-| CI platforms | Linux, Windows and macOS |
+| CI platforms | Linux, Windows and macOS; Android ARM64 compile check |
 | Android / Termux | ARM64 compile check in CI; physical device test pending |
 | Status | Early development |
 
@@ -432,7 +457,32 @@ amilcar file diff source.txt copy.txt
 amilcar file duplicates .
 amilcar file mkdir data/new
 amilcar file move copy.txt data/copy.txt
+
+echo "Hello world" > notes.txt
+echo '{"active":true}' > data.json
+printf 'name,age\\nAna,20\\n' > people.csv
+amilcar text stats notes.txt
+amilcar json validate data.json
+amilcar json format data.json formatted.json
+amilcar csv inspect people.csv
+amilcar csv select people.csv selected.csv --columns name
+amilcar --json text stats notes.txt
 ```
+
+### Update an existing installation
+
+From the repository directory:
+
+```sh
+cd ~/AmilcarCore-RS
+git pull --ff-only origin main
+sh scripts/install.sh
+hash -r
+amilcar --version
+amilcar info
+```
+
+`git pull` updates the source; running the installer again rebuilds and replaces the installed executable.
 
 ### Linux
 
@@ -559,7 +609,7 @@ amilcar --json file inspect ./notes.txt
 - No external API or remote server is required for the documented core operations.
 - Recursive search does not follow symbolic links.
 - Entry and size limits help control resource consumption.
-- File copying does not overwrite by default; replacement requires <code>--overwrite</code>. Directory removal only accepts empty directories.
+- Copying and transformations do not overwrite by default; replacement requires <code>--overwrite</code>. Overwrite mode rejects symbolic links and directories; directory removal only accepts empty directories.
 - <code>unsafe</code> is avoided unless technically justified and documented.
 
 ## Roadmap
