@@ -1,0 +1,11 @@
+[package]
+name = "amilcar-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Public engine API and shared types"
+[dependencies]
+amilcar-fs.workspace = true
+amilcar-data.workspace = true
+thiserror.workspace = true
