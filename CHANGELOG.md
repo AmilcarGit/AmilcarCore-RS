@@ -12,3 +12,9 @@
 - Expanded CI to run formatting, all-target checks, tests and Clippy, plus Linux/Windows/macOS and Android ARM64 target checks.
 - Added architecture, roadmap and release preparation documentation.
 - Retained local-only processing and create-new output behavior unless \`--overwrite\` is explicitly supplied.
+
+- Standardized streaming I/O on 64 KiB buffers for file copy, hashing and comparison.
+- Hardened bounded text reads against files growing after the initial metadata check.
+- Refused symbolic-link targets in explicit overwrite writes and added a Unix regression test.
+- Optimized duplicate detection by filtering unique file sizes before hashing.
+- Added benchmark execution to the CI quality job.
