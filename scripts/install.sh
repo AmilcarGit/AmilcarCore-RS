@@ -31,9 +31,13 @@ fi
 
 [ -f "$PROJECT_DIR/Cargo.toml" ] || fail "No se encontró el workspace Cargo.toml en: $PROJECT_DIR"
 say "Compilando e instalando AmilcarCore-RS desde: $PROJECT_DIR"
-cargo install --path "$PROJECT_DIR/crates/amilcar-cli" --root "$INSTALL_ROOT" --force
+(cd "$PROJECT_DIR" && cargo build --release --package amilcar-cli)
 
 BIN_DIR="$INSTALL_ROOT/bin"
+mkdir -p "$BIN_DIR"
+cp "$PROJECT_DIR/target/release/amilcar" "$BIN_DIR/amilcar"
+chmod 755 "$BIN_DIR/amilcar"
+
 case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
   *) say ""; say "Añade esta ruta a tu PATH para usar 'amilcar' desde cualquier carpeta:"; say "  export PATH=\"$BIN_DIR:\$PATH\"";;
