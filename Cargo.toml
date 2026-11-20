@@ -15,4 +15,5 @@ amilcar-data = { path = "crates/amilcar-data" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
+sha2 = "0.10"
 clap = { version = "4", features = ["derive"] }
