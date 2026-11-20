@@ -10,3 +10,8 @@ serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 csv = "1"
+
+
+[[bench]]
+name = "data_processing"
+harness = false
