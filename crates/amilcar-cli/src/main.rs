@@ -35,6 +35,31 @@ enum FileCommands {
         #[arg(long, default_value_t = 100_000)]
         max_entries: usize,
     },
+    /// Copy a regular file. Refuses to overwrite unless --overwrite is supplied.
+    Copy {
+        source: PathBuf,
+        destination: PathBuf,
+        #[arg(long)]
+        overwrite: bool,
+    },
+    /// Move a file or directory to a destination that must not exist.
+    Move { source: PathBuf, destination: PathBuf },
+    /// Rename a file or directory within its current parent directory.
+    Rename { path: PathBuf, new_name: String },
+    /// Create a directory and any missing parent directories.
+    Mkdir { path: PathBuf },
+    /// Remove one regular file. This does not remove directories.
+    Remove { path: PathBuf },
+    /// Remove an empty directory only.
+    Rmdir { path: PathBuf },
+    /// Calculate the SHA-256 digest of a regular file.
+    Hash { path: PathBuf },
+    /// List groups of files with identical SHA-256 digests.
+    Duplicates {
+        path: PathBuf,
+        #[arg(long, default_value_t = 100_000)]
+        max_entries: usize,
+    },
 }
 
 fn main() {
@@ -75,6 +100,46 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 let options = amilcar_fs::DirectoryOptions { max_entries };
                 for found in amilcar_fs::find_files(path, &filter, &options)? {
                     println!("{}", found.display());
+                }
+            }
+            FileCommands::Copy { source, destination, overwrite } => {
+                let bytes = amilcar_fs::copy_file(source, destination, overwrite)?;
+                println!("Copied {bytes} bytes.");
+            }
+            FileCommands::Move { source, destination } => {
+                amilcar_fs::move_path(source, destination)?;
+                println!("Path moved successfully.");
+            }
+            FileCommands::Rename { path, new_name } => {
+                amilcar_fs::rename_path(path, new_name)?;
+                println!("Path renamed successfully.");
+            }
+            FileCommands::Mkdir { path } => {
+                amilcar_fs::create_directory(path)?;
+                println!("Directory created.");
+            }
+            FileCommands::Remove { path } => {
+                amilcar_fs::remove_file(path)?;
+                println!("File removed.");
+            }
+            FileCommands::Rmdir { path } => {
+                amilcar_fs::remove_empty_directory(path)?;
+                println!("Empty directory removed.");
+            }
+            FileCommands::Hash { path } => {
+                println!("{}", amilcar_fs::sha256_file(path)?);
+            }
+            FileCommands::Duplicates { path, max_entries } => {
+                let groups = amilcar_fs::find_duplicates(path, max_entries)?;
+                if groups.is_empty() {
+                    println!("No duplicate files found.");
+                } else {
+                    for group in groups {
+                        println!("SHA-256: {}", group.sha256);
+                        for file in group.files {
+                            println!("  {}", file.display());
+                        }
+                    }
                 }
             }
         },
