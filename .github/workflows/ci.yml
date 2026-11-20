@@ -33,6 +33,8 @@ jobs:
         run: cargo test --workspace
       - name: Run Clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Execute benchmark smoke tests
+        run: cargo bench --workspace
 
   cross-platform:
     name: Build and test (${{ matrix.os }})
