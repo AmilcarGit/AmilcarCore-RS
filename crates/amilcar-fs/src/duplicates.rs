@@ -18,9 +18,12 @@ pub fn find_duplicates(root: impl AsRef<Path>, max_entries: usize) -> io::Result
         let digest = sha256_file(&path)?;
         by_digest.entry(digest).or_default().push(path);
     }
-    let mut groups: Vec<_> = by_digest.into_iter()
+    let mut groups: Vec<_> = by_digest
+        .into_iter()
         .filter_map(|(sha256, mut files)| {
-            if files.len() < 2 { None } else {
+            if files.len() < 2 {
+                None
+            } else {
                 files.sort();
                 Some(DuplicateGroup { sha256, files })
             }
