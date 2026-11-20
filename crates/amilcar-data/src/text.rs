@@ -41,6 +41,14 @@ mod tests {
 
     #[test]
     fn empty_text_has_zero_counts() {
-        assert_eq!(stats(""), TextStats { bytes: 0, characters: 0, words: 0, lines: 0 });
+        assert_eq!(
+            stats(""),
+            TextStats {
+                bytes: 0,
+                characters: 0,
+                words: 0,
+                lines: 0
+            }
+        );
     }
 }
