@@ -35,8 +35,8 @@ jobs:
         run: cargo clippy --workspace --all-targets -- -D warnings
 
   cross-platform:
-    name: Build and test (\${{ matrix.os }})
-    runs-on: \${{ matrix.os }}
+    name: Build and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
