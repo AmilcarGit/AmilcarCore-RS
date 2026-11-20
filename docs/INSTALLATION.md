@@ -1,165 +1,212 @@
 # Instalación de AmilcarCore-RS
 
-AmilcarCore-RS se compila localmente con Rust. No requiere una API externa ni un servidor remoto. La primera compilación necesita conexión para obtener el código fuente y las dependencias de Cargo; después, Cargo puede reutilizar su caché local.
+AmilcarCore-RS se compila localmente con Rust. No requiere una API externa ni un servidor remoto para procesar archivos. La primera instalación necesita conexión para obtener el código y las dependencias de Cargo.
 
 ## Requisitos
 
 - Rust y Cargo **1.75 o superior**.
-- Git, para clonar el repositorio.
-- Espacio libre para descargar dependencias y compilar.
-- En Linux, las herramientas de compilación que requiera el paquete de Rust de tu distribución.
+- Git para clonar el repositorio.
+- Espacio libre para dependencias y compilación.
 
-Comprueba los requisitos:
+Comprueba las herramientas:
 
-```sh
+\`\`\`sh
 rustc --version
 cargo --version
 git --version
-```
+\`\`\`
 
 ## Android con Termux
 
-Instala Termux desde una fuente mantenida y abre la terminal:
+**1. Actualiza los paquetes e instala Git y Rust**
 
-```sh
+\`\`\`sh
 pkg update && pkg upgrade
 pkg install git rust
-```
+\`\`\`
 
-Comprueba la versión de Rust. Debe ser 1.75 o superior:
+**2. Comprueba las versiones**
 
-```sh
+\`\`\`sh
 rustc --version
 cargo --version
-```
+\`\`\`
 
-Si tu paquete de Rust es anterior a 1.75, actualiza Rust con rustup siguiendo su documentación oficial antes de continuar.
+Rust debe ser 1.75 o superior. Si la versión es anterior, actualiza tu toolchain antes de continuar.
 
-Clona e instala:
+**3. Descarga el repositorio**
 
-```sh
+\`\`\`sh
 git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
 cd AmilcarCore-RS
+\`\`\`
+
+**4. Compila e instala el CLI**
+
+\`\`\`sh
 sh scripts/install.sh
-```
+\`\`\`
 
-El instalador coloca el ejecutable en `$HOME/.local/bin/amilcar`. Si Termux indica que la ruta no está en PATH, ejecuta:
+El instalador compila en modo release e instala el ejecutable en \`$HOME/.local/bin/amilcar\`.
 
-```sh
+**5. Configura el PATH si es necesario**
+
+\`\`\`sh
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
-```
+\`\`\`
 
-Verifica:
+**6. Verifica la instalación**
 
-```sh
+\`\`\`sh
 amilcar --version
 amilcar info
 amilcar --help
-```
+amilcar text --help
+amilcar json --help
+amilcar csv --help
+\`\`\`
 
-> Termux usa Android. La compilación se realiza en el propio dispositivo y depende de que la versión de Rust disponible soporte la arquitectura y el entorno del teléfono. No se distribuye todavía un APK ni un binario Android precompilado.
+**7. Ejecuta una prueba local**
+
+\`\`\`sh
+mkdir -p ~/amilcar-prueba
+cd ~/amilcar-prueba
+echo "Hola mundo" > notas.txt
+echo '{"activo":true}' > datos.json
+printf 'nombre,edad\nAna,20\n' > personas.csv
+
+amilcar text stats notas.txt
+amilcar json validate datos.json
+amilcar json format datos.json datos-formateados.json
+amilcar csv inspect personas.csv
+amilcar csv select personas.csv nombres.csv --columns nombre
+amilcar file hash datos.json
+\`\`\`
+
+**8. Usa salida estructurada para scripts**
+
+\`\`\`sh
+amilcar --json text stats notas.txt
+amilcar --json file inspect datos.json
+\`\`\`
 
 ## Linux
 
 ### Debian, Ubuntu y derivados
 
-```sh
+\`\`\`sh
 sudo apt update
 sudo apt install -y git build-essential curl
-```
+\`\`\`
 
-Instala Rust estable con rustup si tu distribución no ofrece Rust 1.75 o superior:
+Instala Rust estable si la versión del sistema es anterior a 1.75:
 
-```sh
+\`\`\`sh
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 . "$HOME/.cargo/env"
 rustup update stable
-```
+\`\`\`
 
 ### Fedora
 
-```sh
+\`\`\`sh
 sudo dnf install -y git gcc
-```
-
-Instala Rust estable con rustup si el paquete de la distribución no cumple la versión mínima.
+\`\`\`
 
 ### Arch Linux y derivados
 
-```sh
+\`\`\`sh
 sudo pacman -Syu --needed git base-devel rust
-```
+\`\`\`
 
-Comprueba que `rustc --version` sea 1.75 o superior. Si no, utiliza rustup.
+Verifica que Rust sea 1.75 o superior. En caso contrario, usa rustup.
 
-### Compilar e instalar
+### Clonar, compilar e instalar
 
-```sh
+\`\`\`sh
 git clone https://github.com/AmilcarGit/AmilcarCore-RS.git
 cd AmilcarCore-RS
 sh scripts/install.sh
-```
+\`\`\`
 
-Verifica:
+Comprueba el ejecutable:
 
-```sh
+\`\`\`sh
 amilcar --version
 amilcar info
 amilcar --help
-```
+\`\`\`
+
+Asegúrate de que \`$HOME/.local/bin\` esté en el PATH.
 
 ## Instalación manual desde el código fuente
 
-Si ya tienes el repositorio y Rust:
-
-```sh
-cargo check --workspace
+\`\`\`sh
+cargo fmt --all -- --check
+cargo check --workspace --all-targets
 cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
 cargo install --path crates/amilcar-cli --root "$HOME/.local" --force
-```
+\`\`\`
 
-Asegúrate de que `$HOME/.local/bin` esté en tu PATH.
+## Comandos principales
 
-## Ejemplos de uso
-
-```sh
-# Información del motor
+\`\`\`sh
 amilcar info
-
-# Inspeccionar un archivo o directorio
 amilcar file inspect ./documento.txt
-
-# Comparar dos archivos
 amilcar file diff ./original.txt ./copia.txt
-
-# Buscar archivos JSON recursivamente
 amilcar file find ./documentos --extension json
+amilcar file hash ./documento.txt
+amilcar file duplicates ./documentos
 
-# Buscar nombres que contengan "config"
-amilcar file find ./proyecto --name config
-```
+amilcar text stats ./notas.txt
+amilcar text normalize ./entrada.txt ./salida.txt
 
-El comando `file diff` devuelve código de salida 2 cuando detecta diferencias. Los errores de ejecución devuelven código 1.
+amilcar json validate ./datos.json
+amilcar json format ./datos.json ./formateado.json
+amilcar json format ./datos.json ./compacto.json --compact
+
+amilcar csv validate ./personas.csv
+amilcar csv inspect ./personas.csv
+amilcar csv format ./personas.csv ./limpio.csv
+amilcar csv select ./personas.csv ./seleccion.csv --columns nombre,edad
+
+amilcar --json file inspect ./documento.txt
+\`\`\`
+
+Los comandos de texto, JSON y CSV leen un máximo de 64 MiB por archivo. Las transformaciones crean un destino nuevo de forma predeterminada. Para reemplazar un archivo existente, utiliza \`--overwrite\` explícitamente.
+
+\`file diff\` devuelve código de salida 2 cuando detecta diferencias; los errores de ejecución devuelven código 1.
+
+## Benchmarks
+
+Desde el repositorio:
+
+\`\`\`sh
+cargo bench --workspace
+\`\`\`
+
+Las mediciones dependen del dispositivo y no representan garantías de rendimiento.
 
 ## Desinstalar
 
 Desde el repositorio:
 
-```sh
+\`\`\`sh
 sh scripts/uninstall.sh
-```
+\`\`\`
 
-También puedes borrar manualmente `$HOME/.local/bin/amilcar`. La desinstalación no borra el código fuente ni la caché de Cargo.
+La desinstalación no elimina el código fuente ni la caché de Cargo.
 
 ## Problemas frecuentes
 
-- **`cargo: command not found`:** instala Rust/Cargo y abre una terminal nueva o carga `$HOME/.cargo/env`.
-- **Rust demasiado antiguo:** ejecuta `rustup update stable` y comprueba con `rustc --version`.
-- **`amilcar: command not found`:** añade `$HOME/.local/bin` al PATH.
-- **Error al compilar dependencias nativas:** instala el compilador y las herramientas de desarrollo de tu distribución.
-- **Termux sin memoria durante la compilación:** cierra otras aplicaciones y vuelve a ejecutar la compilación; evita procesos paralelos pesados.
+- **\`cargo: command not found\`:** instala Rust/Cargo y vuelve a abrir la terminal o carga \`$HOME/.cargo/env\`.
+- **Rust demasiado antiguo:** actualiza Rust estable y comprueba la versión.
+- **\`amilcar: command not found\`:** añade \`$HOME/.local/bin\` al PATH y verifica que exista el ejecutable.
+- **Destino ya existente:** vuelve a ejecutar el comando con \`--overwrite\` solo cuando aceptes reemplazarlo.
+- **Termux se queda sin memoria:** cierra otras aplicaciones y vuelve a ejecutar la compilación.
 
-## Alcance actual
+## Alcance Android
 
-El instalador compila el CLI que existe hoy. No instala una interfaz gráfica, no crea un servicio en segundo plano y no descarga modelos. Las funciones disponibles se limitan a los comandos documentados en el README.
+Termux compila el programa en el propio dispositivo. La CI realiza una comprobación de compilación para \`aarch64-linux-android\`, pero eso no sustituye una prueba en el teléfono. No se distribuyen APK ni binarios Android precompilados.
