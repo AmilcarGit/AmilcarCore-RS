@@ -24,7 +24,7 @@
 
 AmilcarCore-RS es un workspace modular escrito en Rust. Ofrece una biblioteca reutilizable y una interfaz de línea de comandos para inspeccionar, comparar y buscar archivos localmente.
 
-> **Estado:** desarrollo temprano · Etapa 2 — base del sistema de archivos. Las API pueden cambiar antes de una versión estable.
+> **Estado:** desarrollo temprano · Etapa 3 — operaciones avanzadas del sistema de archivos. Las API pueden cambiar antes de una versión estable.
 
 ### Características disponibles
 
@@ -32,6 +32,10 @@ AmilcarCore-RS es un workspace modular escrito en Rust. Ofrece una biblioteca re
 - Comparación de archivos por bloques y detección del primer byte diferente.
 - Búsqueda recursiva por extensión o fragmento del nombre.
 - Lectura y procesamiento con límites configurables.
+- Copia de archivos con protección contra sobrescritura por defecto.
+- Movimiento y renombrado de rutas con comprobación de destino.
+- Creación de directorios y eliminación segura de archivos/directorios vacíos.
+- Hash SHA-256 en streaming y agrupación de archivos duplicados.
 - Escrituras explícitas: crear sin sobrescribir o sobrescribir solo cuando se solicita.
 - Ejecución local para las operaciones core documentadas.
 
@@ -122,6 +126,25 @@ amilcar file find ./documentos --extension json
 
 # Buscar por fragmento del nombre
 amilcar file find ./proyecto --name config
+
+# Copiar (no sobrescribe salvo --overwrite)
+amilcar file copy ./origen.txt ./copia.txt
+amilcar file copy ./origen.txt ./copia.txt --overwrite
+
+# Mover y renombrar
+amilcar file move ./copia.txt ./archivo.txt
+amilcar file rename ./archivo.txt final.txt
+
+# Crear y eliminar directorios
+amilcar file mkdir ./datos/nuevo
+amilcar file rmdir ./datos/nuevo
+
+# Eliminar un archivo
+amilcar file remove ./archivo.txt
+
+# SHA-256 y duplicados
+amilcar file hash ./archivo.txt
+amilcar file duplicates ./documentos --max-entries 100000
 ~~~
 
 ## Seguridad y diseño
@@ -129,7 +152,7 @@ amilcar file find ./proyecto --name config
 - No se requieren APIs externas ni servidor remoto para las operaciones core documentadas.
 - No se siguen enlaces simbólicos durante la búsqueda recursiva.
 - Los límites de entradas y tamaños reducen el riesgo de consumir recursos sin control.
-- La escritura no sobrescribe archivos de forma implícita.
+- La copia no sobrescribe archivos de forma predeterminada; el modo de reemplazo requiere <code>--overwrite</code>. La eliminación de directorios solo admite directorios vacíos.
 - Se evita <code>unsafe</code> salvo que exista una justificación técnica documentada.
 
 ## Hoja de ruta
@@ -148,7 +171,7 @@ Puedes elegir entre [MIT](LICENSE-MIT) o [Apache License 2.0](LICENSE-APACHE).
 
 AmilcarCore-RS is a modular Rust workspace. It provides a reusable library and a command-line interface for local file inspection, comparison and search.
 
-> **Status:** early development · Stage 2 — filesystem foundation. APIs may change before a stable release.
+> **Status:** early development · Stage 3 — advanced filesystem operations. APIs may change before a stable release.
 
 ### Available features
 
@@ -156,6 +179,10 @@ AmilcarCore-RS is a modular Rust workspace. It provides a reusable library and a
 - Buffered file comparison and first differing byte detection.
 - Recursive search by extension or filename substring.
 - Bounded reading and processing primitives.
+- File copying refuses replacement unless explicitly requested.
+- Move and rename operations check destination conflicts.
+- Directory creation and safe removal of files/empty directories.
+- Streaming SHA-256 and duplicate-file grouping.
 - Explicit write modes: create without replacement, or overwrite only when requested.
 - Local execution for the documented core operations.
 
@@ -246,6 +273,25 @@ amilcar file find ./documents --extension json
 
 # Search by filename substring
 amilcar file find ./project --name config
+
+# Copy (does not overwrite unless --overwrite is passed)
+amilcar file copy ./source.txt ./copy.txt
+amilcar file copy ./source.txt ./copy.txt --overwrite
+
+# Move and rename
+amilcar file move ./copy.txt ./file.txt
+amilcar file rename ./file.txt final.txt
+
+# Create and remove directories
+amilcar file mkdir ./data/new
+amilcar file rmdir ./data/new
+
+# Remove a file
+amilcar file remove ./file.txt
+
+# SHA-256 and duplicate detection
+amilcar file hash ./file.txt
+amilcar file duplicates ./documents --max-entries 100000
 ~~~
 
 ## Security and design
@@ -253,7 +299,7 @@ amilcar file find ./project --name config
 - No external API or remote server is required for the documented core operations.
 - Recursive search does not follow symbolic links.
 - Entry and size limits help control resource consumption.
-- File writes never overwrite implicitly.
+- File copying does not overwrite by default; replacement requires <code>--overwrite</code>. Directory removal only accepts empty directories.
 - <code>unsafe</code> is avoided unless technically justified and documented.
 
 ## Roadmap
