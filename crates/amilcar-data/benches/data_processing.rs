@@ -34,5 +34,8 @@ fn measure(name: &str, iterations: u32, mut operation: impl FnMut()) {
     for _ in 0..iterations {
         operation();
     }
-    println!("{name}: {iterations} iterations in {:.3} s", start.elapsed().as_secs_f64());
+    println!(
+        "{name}: {iterations} iterations in {:.3} s",
+        start.elapsed().as_secs_f64()
+    );
 }
