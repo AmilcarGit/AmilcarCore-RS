@@ -57,7 +57,10 @@ mod tests {
         let path = std::env::temp_dir().join(format!("amilcar-reader-{}.txt", std::process::id()));
         std::fs::write(&path, "local data").unwrap();
         assert_eq!(read_to_string_limited(&path, 32).unwrap(), "local data");
-        assert_eq!(read_to_string_limited(&path, 2).unwrap_err().kind(), io::ErrorKind::InvalidData);
+        assert_eq!(
+            read_to_string_limited(&path, 2).unwrap_err().kind(),
+            io::ErrorKind::InvalidData
+        );
         std::fs::remove_file(path).unwrap();
     }
 }
