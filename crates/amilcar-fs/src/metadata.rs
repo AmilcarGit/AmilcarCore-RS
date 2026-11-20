@@ -23,6 +23,7 @@ pub fn inspect(path: &Path) -> std::io::Result<FileMetadata> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn inspect_reports_file_type() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
