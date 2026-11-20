@@ -7,7 +7,8 @@ fn main() {
         .duration_since(UNIX_EPOCH)
         .expect("system clock should be after the Unix epoch")
         .as_nanos();
-    let root = std::env::temp_dir().join(format!("amilcar-file-bench-{}-{nonce}", std::process::id()));
+    let root =
+        std::env::temp_dir().join(format!("amilcar-file-bench-{}-{nonce}", std::process::id()));
     fs::create_dir_all(&root).expect("benchmark directory should be created");
 
     let left = root.join("left.bin");
@@ -21,7 +22,11 @@ fn main() {
     for _ in 0..iterations {
         black_box(amilcar_fs::sha256_file(black_box(&left)).expect("hash should succeed"));
     }
-    report("SHA-256, 16 MiB", payload.len() as u64 * u64::from(iterations), start.elapsed());
+    report(
+        "SHA-256, 16 MiB",
+        payload.len() as u64 * u64::from(iterations),
+        start.elapsed(),
+    );
 
     let start = Instant::now();
     for _ in 0..iterations {
