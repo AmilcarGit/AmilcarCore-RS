@@ -77,11 +77,11 @@ pub fn select_columns(input: &str, selected: &[String]) -> Result<String, CsvPro
     writer.write_record(indexes.iter().map(|index| &headers[*index]))?;
     for record in reader.records() {
         let record = record?;
-        writer.write_record(
-            indexes.iter().map(|index| record.get(*index).unwrap_or("")),
-        )?;
+        writer.write_record(indexes.iter().map(|index| record.get(*index).unwrap_or("")))?;
     }
-    let bytes = writer.into_inner().map_err(|error| CsvProcessingError::Io(error.into_error()))?;
+    let bytes = writer
+        .into_inner()
+        .map_err(|error| CsvProcessingError::Io(error.into_error()))?;
     Ok(String::from_utf8(bytes)?)
 }
 
