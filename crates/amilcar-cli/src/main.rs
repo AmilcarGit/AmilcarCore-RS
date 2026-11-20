@@ -48,10 +48,7 @@ enum FileCommands {
         destination: PathBuf,
     },
     /// Rename a file or directory within its current parent directory.
-    Rename {
-        path: PathBuf,
-        new_name: String,
-    },
+    Rename { path: PathBuf, new_name: String },
     /// Create a directory and any missing parent directories.
     Mkdir { path: PathBuf },
     /// Remove one regular file. This does not remove directories.
@@ -112,8 +109,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                     );
                     println!(
                         "Left: {} bytes; right: {} bytes.",
-                        result.left_size,
-                        result.right_size
+                        result.left_size, result.right_size
                     );
                     std::process::exit(2);
                 }
@@ -141,7 +137,10 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 let bytes = amilcar_fs::copy_file(source, destination, overwrite)?;
                 println!("Copied {bytes} bytes.");
             }
-            FileCommands::Move { source, destination } => {
+            FileCommands::Move {
+                source,
+                destination,
+            } => {
                 amilcar_fs::move_path(source, destination)?;
                 println!("Path moved successfully.");
             }
