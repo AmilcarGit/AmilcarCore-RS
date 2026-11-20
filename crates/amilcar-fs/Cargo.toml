@@ -8,3 +8,8 @@ description = "Filesystem inspection and local file operations"
 [dependencies]
 thiserror.workspace = true
 sha2.workspace = true
+
+
+[[bench]]
+name = "file_processing"
+harness = false
