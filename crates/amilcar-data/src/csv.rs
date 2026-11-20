@@ -32,7 +32,11 @@ pub fn inspect(input: &str) -> Result<CsvSummary, CsvProcessingError> {
         rows += 1;
     }
     let headers = headers.iter().map(str::to_owned).collect::<Vec<_>>();
-    Ok(CsvSummary { columns: headers.len(), headers, rows })
+    Ok(CsvSummary {
+        columns: headers.len(),
+        headers,
+        rows,
+    })
 }
 
 pub fn validate(input: &str) -> Result<CsvSummary, CsvProcessingError> {
@@ -48,7 +52,9 @@ pub fn format(input: &str) -> Result<String, CsvProcessingError> {
     for record in reader.records() {
         writer.write_record(&record?)?;
     }
-    let bytes = writer.into_inner().map_err(|error| CsvProcessingError::Io(error.into_error()))?;
+    let bytes = writer
+        .into_inner()
+        .map_err(|error| CsvProcessingError::Io(error.into_error()))?;
     Ok(String::from_utf8(bytes)?)
 }
 
@@ -61,7 +67,9 @@ pub fn select_columns(input: &str, selected: &[String]) -> Result<String, CsvPro
     let headers = reader.headers()?.clone();
     let mut indexes = Vec::with_capacity(selected.len());
     for column in selected {
-        let index = headers.iter().position(|header| header == column)
+        let index = headers
+            .iter()
+            .position(|header| header == column)
             .ok_or_else(|| CsvProcessingError::MissingColumn(column.clone()))?;
         indexes.push(index);
     }
@@ -69,7 +77,9 @@ pub fn select_columns(input: &str, selected: &[String]) -> Result<String, CsvPro
     writer.write_record(indexes.iter().map(|index| &headers[*index]))?;
     for record in reader.records() {
         let record = record?;
-        writer.write_record(indexes.iter().map(|index| record.get(*index).unwrap_or("")))?;
+        writer.write_record(
+            indexes.iter().map(|index| record.get(*index).unwrap_or("")),
+        )?;
     }
     let bytes = writer.into_inner().map_err(|error| CsvProcessingError::Io(error.into_error()))?;
     Ok(String::from_utf8(bytes)?)
@@ -95,15 +105,25 @@ mod tests {
 
     #[test]
     fn selects_requested_columns_in_requested_order() {
-        let result = select_columns("name,age,city\nAna,20,Lima\n", &["city".into(), "name".into()]).unwrap();
+        let result = select_columns(
+            "name,age,city\nAna,20,Lima\n",
+            &["city".into(), "name".into()],
+        )
+        .unwrap();
         assert!(result.contains("city,name"));
         assert!(result.contains("Lima,Ana"));
     }
 
     #[test]
     fn rejects_invalid_column_selection() {
-        assert!(matches!(select_columns("name\nAna\n", &["age".into()]), Err(CsvProcessingError::MissingColumn(_))));
-        assert!(matches!(select_columns("name\nAna\n", &[]), Err(CsvProcessingError::EmptySelection)));
+        assert!(matches!(
+            select_columns("name\nAna\n", &["age".into()]),
+            Err(CsvProcessingError::MissingColumn(_))
+        ));
+        assert!(matches!(
+            select_columns("name\nAna\n", &[]),
+            Err(CsvProcessingError::EmptySelection)
+        ));
     }
 
     #[test]
