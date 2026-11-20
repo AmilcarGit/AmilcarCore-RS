@@ -91,6 +91,21 @@ amilcar --json text stats notas.txt
 amilcar --json file inspect datos.json
 \`\`\`
 
+## Actualizar una instalación existente en Termux
+
+Si ya clonaste el repositorio y solo quieres instalar la versión más reciente de \`main\`, no repitas el clonado:
+
+\`\`\`sh
+cd ~/AmilcarCore-RS
+git pull --ff-only origin main
+sh scripts/install.sh
+hash -r
+amilcar --version
+amilcar info
+\`\`\`
+
+\`git pull\` actualiza el código fuente. \`sh scripts/install.sh\` vuelve a compilar e instala el ejecutable actualizado en \`$HOME/.local/bin/amilcar\`.
+
 ## Linux
 
 ### Debian, Ubuntu y derivados
