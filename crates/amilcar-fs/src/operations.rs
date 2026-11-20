@@ -13,6 +13,11 @@ pub fn copy_file(source: impl AsRef<Path>, destination: impl AsRef<Path>, overwr
     if !metadata.is_file() || metadata.file_type().is_symlink() {
         return Err(io::Error::new(io::ErrorKind::InvalidInput, "source must be a regular file, not a symbolic link"));
     }
+    if let Ok(destination_metadata) = fs::symlink_metadata(destination) {
+        if destination_metadata.file_type().is_symlink() || destination_metadata.is_dir() {
+            return Err(io::Error::new(io::ErrorKind::InvalidInput, "destination must not be a symbolic link or directory"));
+        }
+    }
     let mut input = BufReader::new(fs::File::open(source)?);
     let mut options = OpenOptions::new();
     options.write(true);
@@ -41,7 +46,7 @@ pub fn rename_path(source: impl AsRef<Path>, new_name: impl AsRef<std::ffi::OsSt
     let source = source.as_ref();
     let name = new_name.as_ref();
     let destination = source.parent().unwrap_or_else(|| Path::new(".")).join(name);
-    if name.is_empty() || Path::new(name).components().count() != 1 {
+    if name.is_empty() || Path::new(name).file_name() != Some(name) || name == "." || name == ".." {
         return Err(io::Error::new(io::ErrorKind::InvalidInput, "new name must be a single path component"));
     }
     move_path(source, destination)
