@@ -1,6 +1,7 @@
+use crate::reader::BUFFER_SIZE;
 use sha2::{Digest, Sha256};
 use std::fs::File;
-use std::io::{self, BufReader, Read};
+use std::io::{self, Read};
 use std::path::Path;
 
 /// SHA-256 digest of a regular file, calculated with a fixed-size buffer.
@@ -13,9 +14,9 @@ pub fn sha256_file(path: impl AsRef<Path>) -> io::Result<String> {
             "hash target must be a regular file, not a symbolic link",
         ));
     }
-    let mut reader = BufReader::new(File::open(path)?);
+    let mut reader = File::open(path)?;
     let mut hasher = Sha256::new();
-    let mut buffer = [0_u8; 16 * 1024];
+    let mut buffer = [0_u8; BUFFER_SIZE];
     loop {
         let count = reader.read(&mut buffer)?;
         if count == 0 {
